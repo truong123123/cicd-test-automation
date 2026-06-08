@@ -1,0 +1,121 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+env:
+  NODE_ENV: test
+
+jobs:
+  # ─── Quick validation check ───────────────────────────────────────────────
+  validate:
+    name: ✅ PR Validation
+    runs-on: ubuntu-latest
+    # Skip draft PRs
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run Linter
+        id: lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: 🧪 Run All Tests
+        id: tests
+        run: npm run test:coverage
+        continue-on-error: true
+
+      - name: 📊 Parse Coverage Results
+        id: coverage
+        if: always()
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            LINES=$(cat coverage/coverage-summary.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['total']['lines']['pct'])")
+            FUNCTIONS=$(cat coverage/coverage-summary.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['total']['functions']['pct'])")
+            BRANCHES=$(cat coverage/coverage-summary.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['total']['branches']['pct'])")
+            echo "lines=$LINES" >> $GITHUB_OUTPUT
+            echo "functions=$FUNCTIONS" >> $GITHUB_OUTPUT
+            echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+          else
+            echo "lines=N/A" >> $GITHUB_OUTPUT
+            echo "functions=N/A" >> $GITHUB_OUTPUT
+            echo "branches=N/A" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 💬 Comment PR Results
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const lintStatus = '${{ steps.lint.outcome }}' === 'success' ? '✅ Passed' : '❌ Failed';
+            const testStatus = '${{ steps.tests.outcome }}' === 'success' ? '✅ Passed' : '❌ Failed';
+            const lines = '${{ steps.coverage.outputs.lines }}';
+            const functions = '${{ steps.coverage.outputs.functions }}';
+            const branches = '${{ steps.coverage.outputs.branches }}';
+
+            const coverageStatus = parseFloat(lines) >= 80 ? '✅' : '⚠️';
+
+            const body = `## 🤖 CI/CD Check Results
+
+            | Check | Status |
+            |-------|--------|
+            | 🔍 ESLint | ${lintStatus} |
+            | 🧪 Tests | ${testStatus} |
+
+            ### 📊 Coverage Report
+            | Metric | Coverage | Threshold |
+            |--------|----------|-----------|
+            | Lines | ${coverageStatus} ${lines}% | 80% |
+            | Functions | ${functions}% | 80% |
+            | Branches | ${branches}% | 80% |
+
+            ---
+            *Commit: \`${{ github.event.pull_request.head.sha }}\`*
+            `;
+
+            // Find existing comment and update, or create new one
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('CI/CD Check Results'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body,
+              });
+            }
+
+      - name: ❌ Fail if lint or tests failed
+        if: steps.lint.outcome == 'failure' || steps.tests.outcome == 'failure'
+        run: |
+          echo "::error::PR validation failed. Lint: ${{ steps.lint.outcome }}, Tests: ${{ steps.tests.outcome }}"
+          exit 1
