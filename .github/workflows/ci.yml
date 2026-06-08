@@ -117,9 +117,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tlu-login-screenshots
-          path: |
-            tlu_login_initial.png
-            tlu_login_result.png
+          path: tlu_login_*.png
           retention-days: 7
 
   # ─── Job 5: Coverage Report ───────────────────────────────────────────────
