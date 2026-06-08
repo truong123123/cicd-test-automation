@@ -109,6 +109,19 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
 
+      - name: Run TLU Portal Login E2E Browser Test
+        run: npm run test:tlu
+
+      - name: Upload TLU Test Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tlu-login-screenshots
+          path: |
+            tlu_login_initial.png
+            tlu_login_result.png
+          retention-days: 7
+
   # ─── Job 5: Coverage Report ───────────────────────────────────────────────
   coverage:
     name: 📊 Full Coverage Report

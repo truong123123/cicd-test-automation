@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
@@ -19,19 +19,31 @@ const getChromePath = () => {
 };
 
 async function run() {
-  const chromePath = getChromePath();
-  if (!chromePath) {
-    console.error('❌ Không tìm thấy Google Chrome cài đặt trên hệ thống của bạn.');
-    console.error('Vui lòng cài đặt Google Chrome để chạy kiểm thử này.');
-    process.exit(1);
+  const isCI = process.env.CI === 'true';
+  let launchOptions = {};
+
+  if (isCI) {
+    console.log('☁️ Đang chạy trên GitHub Actions (CI Mode)...');
+    launchOptions = {
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    };
+  } else {
+    const chromePath = getChromePath();
+    if (!chromePath) {
+      console.error('❌ Không tìm thấy Google Chrome cài đặt trên hệ thống của bạn.');
+      console.error('Vui lòng cài đặt Google Chrome để chạy kiểm thử này.');
+      process.exit(1);
+    }
+    console.log(`🚀 Đang khởi chạy Chrome từ: ${chromePath}...`);
+    launchOptions = {
+      executablePath: chromePath,
+      headless: false,
+      defaultViewport: { width: 1280, height: 800 },
+    };
   }
 
-  console.log(`🚀 Đang khởi chạy Chrome từ: ${chromePath}...`);
-  const browser = await puppeteer.launch({
-    executablePath: chromePath,
-    headless: false, // Chạy ở chế độ giao diện (non-headless) để người dùng có thể quan sát
-    defaultViewport: { width: 1280, height: 800 },
-  });
+  const browser = await puppeteer.launch(launchOptions);
 
   const page = await browser.newPage();
   const url = 'https://sinhvien1.tlu.edu.vn/#/login';
