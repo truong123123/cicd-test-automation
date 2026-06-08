@@ -13,6 +13,8 @@
     "test:coverage": "jest --config jest.coverage.js --coverage --runInBand --forceExit",
     "test:ci": "jest --config jest.coverage.js --ci --coverage --runInBand --forceExit",
     "test:tlu": "node test-tlu-login.js",
+    "test:tlu:fail": "node test-tlu-login.js fail",
+    "test:tlu:success": "node test-tlu-login.js success",
     "lint": "eslint src/ tests/ --ext .js",
     "lint:fix": "eslint src/ tests/ --ext .js --fix"
   },

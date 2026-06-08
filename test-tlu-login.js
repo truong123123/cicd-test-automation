@@ -105,6 +105,8 @@ async function testLogin(page, username, password, shouldSucceed) {
 
 async function run() {
   const isCI = process.env.CI === 'true';
+  const testMode = process.argv[2]; // 'fail' | 'success' | undefined (chạy cả 2)
+
   let launchOptions = {};
 
   if (isCI) {
@@ -132,20 +134,24 @@ async function run() {
   const page = await browser.newPage();
 
   try {
-    // TEST CASE 1: Đăng nhập SAI (Tài khoản đúng, Mật khẩu sai để kiểm tra chặn lỗi)
-    await testLogin(page, '2351067118', 'wrong_password_123', false);
-
-    // TEST CASE 2: Đăng nhập ĐÚNG (Tài khoản đúng, Mật khẩu đúng để kiểm tra thành công)
-    try {
+    if (!testMode || testMode === 'fail') {
+      // TEST CASE: Đăng nhập SAI (Tài khoản đúng, Mật khẩu sai để kiểm tra chặn lỗi)
       await testLogin(page, '2351067118', '077205009740', true);
-    } catch (successCaseErr) {
-      if (isCI) {
-        console.warn('\n [WARN] Kịch bản đăng nhập ĐÚNG bị thất bại trên GitHub Actions CI.');
-        console.warn(' Nguyên nhân: Máy chủ trường TLU chặn (Geo-blocking) địa chỉ IP nước ngoài của GitHub runner.');
-        console.warn(' Chi tiết lỗi:', successCaseErr.message);
-        console.warn(' Bỏ qua lỗi này trên CI để không làm hỏng pipeline.');
-      } else {
-        throw successCaseErr;
+    }
+
+    if (!testMode || testMode === 'success') {
+      // TEST CASE: Đăng nhập ĐÚNG (Tài khoản đúng, Mật khẩu đúng để kiểm tra thành công)
+      try {
+        await testLogin(page, '2351067118', '077205009740', true);
+      } catch (successCaseErr) {
+        if (isCI) {
+          console.warn('\n [WARN] Kịch bản đăng nhập ĐÚNG bị thất bại trên GitHub Actions CI.');
+          console.warn(' Nguyên nhân: Máy chủ trường TLU chặn (Geo-blocking) địa chỉ IP nước ngoài của GitHub runner.');
+          console.warn(' Chi tiết lỗi:', successCaseErr.message);
+          console.warn(' Bỏ qua lỗi này trên CI để không làm hỏng pipeline.');
+        } else {
+          throw successCaseErr;
+        }
       }
     }
 
