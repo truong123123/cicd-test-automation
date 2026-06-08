@@ -36,7 +36,7 @@ async function testLogin(page, username, password, shouldSucceed) {
   // Định vị các ô nhập tài khoản và mật khẩu
   await page.waitForSelector('input', { timeout: 10000 });
   const inputs = await page.$$('input');
-  
+
   let usernameInput = null;
   let passwordInput = null;
 
@@ -57,20 +57,20 @@ async function testLogin(page, username, password, shouldSucceed) {
   if (!passwordInput && inputs.length > 1) passwordInput = inputs[1];
 
   if (!usernameInput || !passwordInput) {
-    throw new Error('❌ Không phát hiện thấy ô nhập tài khoản/mật khẩu trên trang.');
+    throw new Error(' Không phát hiện thấy ô nhập tài khoản/mật khẩu trên trang.');
   }
 
   // Xóa trắng và điền thông tin
   await page.evaluate(el => el.value = '', usernameInput);
   await usernameInput.type(username);
-  console.log(`✍️ Điền tài khoản: ${username}`);
+  console.log(` Điền tài khoản: ${username}`);
 
   await page.evaluate(el => el.value = '', passwordInput);
   await passwordInput.type(password);
-  console.log('✍️ Điền mật khẩu.');
+  console.log(' Điền mật khẩu.');
 
   // Nhấn Enter gửi form
-  console.log('⌨️ Nhấn Enter gửi yêu cầu...');
+  console.log('⌨ Nhấn Enter gửi yêu cầu...');
   await page.keyboard.press('Enter');
 
   // Chờ phản hồi hệ thống
@@ -78,28 +78,28 @@ async function testLogin(page, username, password, shouldSucceed) {
 
   // Kiểm thử kết quả dựa trên URL hiện tại
   const currentUrl = page.url();
-  console.log(`📍 URL hiện tại: ${currentUrl}`);
+  console.log(` URL hiện tại: ${currentUrl}`);
 
   if (shouldSucceed) {
     // Trường hợp Đăng nhập đúng: URL nên chuyển đổi (không còn ở trang #/login)
     if (currentUrl.includes('/login')) {
       // Xem trang có hiển thị thông báo lỗi nào không
       const errorTextVisible = await page.evaluate(() => {
-        return document.body.innerText.includes('không chính xác') || 
-               document.body.innerText.includes('tài khoản không tồn tại') ||
-               document.body.innerText.includes('Lỗi');
+        return document.body.innerText.includes('không chính xác') ||
+          document.body.innerText.includes('tài khoản không tồn tại') ||
+          document.body.innerText.includes('Lỗi');
       });
       if (errorTextVisible) {
-        throw new Error('❌ Đăng nhập THẤT BẠI mặc dù thông tin tài khoản là ĐÚNG.');
+        throw new Error(' Đăng nhập THẤT BẠI mặc dù thông tin tài khoản là ĐÚNG.');
       }
     }
-    console.log('🎉 Đăng nhập THÀNH CÔNG đúng như mong muốn.');
+    console.log(' Đăng nhập THÀNH CÔNG đúng như mong muốn.');
   } else {
     // Trường hợp Đăng nhập sai: URL vẫn phải ở trang #/login
     if (!currentUrl.includes('/login')) {
-      throw new Error('❌ Đăng nhập THÀNH CÔNG mặc dù mật khẩu nhập là SAI.');
+      throw new Error(' Đăng nhập THÀNH CÔNG mặc dù mật khẩu nhập là SAI.');
     }
-    console.log('🎉 Đăng nhập THẤT BẠI đúng như mong muốn (hệ thống chặn thành công).');
+    console.log(' Đăng nhập THẤT BẠI đúng như mong muốn (hệ thống chặn thành công).');
   }
 }
 
@@ -108,7 +108,7 @@ async function run() {
   let launchOptions = {};
 
   if (isCI) {
-    console.log('☁️ Đang chạy trên GitHub Actions (CI Mode)...');
+    console.log(' Đang chạy trên GitHub Actions (CI Mode)...');
     launchOptions = {
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
@@ -116,11 +116,11 @@ async function run() {
   } else {
     const chromePath = getChromePath();
     if (!chromePath) {
-      console.error('❌ Không tìm thấy Google Chrome cài đặt trên hệ thống của bạn.');
+      console.error(' Không tìm thấy Google Chrome cài đặt trên hệ thống của bạn.');
       console.error('Vui lòng cài đặt Google Chrome để chạy kiểm thử này.');
       process.exit(1);
     }
-    console.log(`🚀 Đang khởi chạy Chrome từ: ${chromePath}...`);
+    console.log(` Đang khởi chạy Chrome từ: ${chromePath}...`);
     launchOptions = {
       executablePath: chromePath,
       headless: false,
@@ -140,18 +140,18 @@ async function run() {
       await testLogin(page, '2351067118', '077205009740', true);
     } catch (successCaseErr) {
       if (isCI) {
-        console.warn('\n⚠️ [WARN] Kịch bản đăng nhập ĐÚNG bị thất bại trên GitHub Actions CI.');
-        console.warn('👉 Nguyên nhân: Máy chủ trường TLU chặn (Geo-blocking) địa chỉ IP nước ngoài của GitHub runner.');
-        console.warn('👉 Chi tiết lỗi:', successCaseErr.message);
-        console.warn('⚠️ Bỏ qua lỗi này trên CI để không làm hỏng pipeline.');
+        console.warn('\n [WARN] Kịch bản đăng nhập ĐÚNG bị thất bại trên GitHub Actions CI.');
+        console.warn(' Nguyên nhân: Máy chủ trường TLU chặn (Geo-blocking) địa chỉ IP nước ngoài của GitHub runner.');
+        console.warn(' Chi tiết lỗi:', successCaseErr.message);
+        console.warn(' Bỏ qua lỗi này trên CI để không làm hỏng pipeline.');
       } else {
         throw successCaseErr;
       }
     }
 
-    console.log('\n🏁 [SUCCESS] Tất cả kịch bản kiểm thử TLU Login đều hoàn thành!');
+    console.log('\n [SUCCESS] Tất cả kịch bản kiểm thử TLU Login đều hoàn thành!');
   } catch (err) {
-    console.error('\n❌ [FAILURE] Kịch bản kiểm thử thất bại nghiêm trọng:', err.message);
+    console.error('\n [FAILURE] Kịch bản kiểm thử thất bại nghiêm trọng:', err.message);
     await browser.close();
     process.exit(1);
   }
@@ -161,6 +161,6 @@ async function run() {
 }
 
 run().catch(err => {
-  console.error('❌ Lỗi hệ thống:', err);
+  console.error(' Lỗi hệ thống:', err);
   process.exit(1);
 });
