@@ -16,7 +16,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TluLoginTest {
@@ -28,7 +27,7 @@ public class TluLoginTest {
     public static void setup() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-        
+
         String isCI = System.getenv("CI");
         if ("true".equalsIgnoreCase(isCI)) {
             options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
@@ -36,7 +35,7 @@ public class TluLoginTest {
             // Optional local options
             // options.addArguments("--headless=new");
         }
-        
+
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -52,7 +51,7 @@ public class TluLoginTest {
     @Test
     public void testLoginFailure() {
         System.out.println("Running login failure test...");
-        performLogin("2351067118", "077205009740", false);
+        performLogin("2351067118", "077205009741", false);
     }
 
     @Test
@@ -91,14 +90,16 @@ public class TluLoginTest {
         for (WebElement input : inputs) {
             String type = input.getAttribute("type");
             String placeholder = input.getAttribute("placeholder");
-            if (placeholder == null) placeholder = "";
+            if (placeholder == null)
+                placeholder = "";
             String name = input.getAttribute("name");
-            if (name == null) name = "";
+            if (name == null)
+                name = "";
 
             if ("password".equals(type)) {
                 passwordInput = input;
-            } else if ("text".equals(type) || placeholder.toLowerCase().contains("mã") || 
-                       placeholder.toLowerCase().contains("tên") || name.toLowerCase().contains("user")) {
+            } else if ("text".equals(type) || placeholder.toLowerCase().contains("mã") ||
+                    placeholder.toLowerCase().contains("tên") || name.toLowerCase().contains("user")) {
                 if (usernameInput == null) {
                     usernameInput = input;
                 }
@@ -106,8 +107,10 @@ public class TluLoginTest {
         }
 
         // Fallback
-        if (usernameInput == null && inputs.size() > 0) usernameInput = inputs.get(0);
-        if (passwordInput == null && inputs.size() > 1) passwordInput = inputs.get(1);
+        if (usernameInput == null && inputs.size() > 0)
+            usernameInput = inputs.get(0);
+        if (passwordInput == null && inputs.size() > 1)
+            passwordInput = inputs.get(1);
 
         if (usernameInput == null || passwordInput == null) {
             throw new RuntimeException("Could not detect username/password inputs");
@@ -134,9 +137,9 @@ public class TluLoginTest {
         if (shouldSucceed) {
             if (currentUrl.contains("/login")) {
                 String bodyText = driver.findElement(By.tagName("body")).getText().toLowerCase();
-                boolean errorVisible = bodyText.contains("không chính xác") || 
-                                       bodyText.contains("tài khoản không tồn tại") || 
-                                       bodyText.contains("lỗi");
+                boolean errorVisible = bodyText.contains("không chính xác") ||
+                        bodyText.contains("tài khoản không tồn tại") ||
+                        bodyText.contains("lỗi");
                 if (errorVisible) {
                     throw new RuntimeException("Login failed despite correct credentials (error message visible)");
                 }
