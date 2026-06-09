@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,7 +63,8 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         User user = getUserByEmailInternal(email);
-        if (user == null) return null;
+        if (user == null)
+            return null;
         return removePassword(user);
     }
 
@@ -104,7 +104,8 @@ public class UserService {
 
     public User updateUser(String id, User updates) {
         Optional<User> optionalUser = users.stream().filter(u -> u.getId().equals(id)).findFirst();
-        if (optionalUser.isEmpty()) return null;
+        if (optionalUser.isEmpty())
+            return null;
 
         User existingUser = optionalUser.get();
 
@@ -146,9 +147,11 @@ public class UserService {
     }
 
     public User verifyPassword(String email, String password) {
-        if (email == null || password == null) return null;
+        if (email == null || password == null)
+            return null;
         User user = getUserByEmailInternal(email.trim().toLowerCase());
-        if (user == null) return null;
+        if (user == null)
+            return null;
 
         String inputHash = hashPassword(password);
         if (user.getPasswordHash().equals(inputHash)) {
@@ -160,12 +163,29 @@ public class UserService {
     public void resetUsers() {
         users.clear();
         User u1 = new User();
-        u1.setId("1"); u1.setName("Alice Johnson"); u1.setEmail("alice@example.com"); u1.setRole("admin"); u1.setPasswordHash(DEFAULT_PASSWORD_HASH); u1.setCreatedAt("2024-01-01T00:00:00.000Z");
+        u1.setId("1");
+        u1.setName("Alice Johnson");
+        u1.setEmail("alice@example.com");
+        u1.setRole("admin");
+        u1.setPasswordHash(DEFAULT_PASSWORD_HASH);
+        u1.setCreatedAt("2024-01-01T00:00:00.000Z");
         User u2 = new User();
-        u2.setId("2"); u2.setName("Bob Smith"); u2.setEmail("bob@example.com"); u2.setRole("user"); u2.setPasswordHash(DEFAULT_PASSWORD_HASH); u2.setCreatedAt("2024-01-02T00:00:00.000Z");
+        u2.setId("2");
+        u2.setName("Bob Smith");
+        u2.setEmail("bob@example.com");
+        u2.setRole("user");
+        u2.setPasswordHash(DEFAULT_PASSWORD_HASH);
+        u2.setCreatedAt("2024-01-02T00:00:00.000Z");
         User u3 = new User();
-        u3.setId("3"); u3.setName("Carol White"); u3.setEmail("carol@example.com"); u3.setRole("user"); u3.setPasswordHash(DEFAULT_PASSWORD_HASH); u3.setCreatedAt("2024-01-03T00:00:00.000Z");
-        users.add(u1); users.add(u2); users.add(u3);
+        u3.setId("3");
+        u3.setName("Carol White");
+        u3.setEmail("carol@example.com");
+        u3.setRole("user");
+        u3.setPasswordHash(DEFAULT_PASSWORD_HASH);
+        u3.setCreatedAt("2024-01-03T00:00:00.000Z");
+        users.add(u1);
+        users.add(u2);
+        users.add(u3);
     }
 
     private User removePassword(User user) {

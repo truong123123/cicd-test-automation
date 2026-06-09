@@ -16,8 +16,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class TluLoginTest {
 
     private static WebDriver driver;
@@ -129,7 +127,7 @@ public class TluLoginTest {
             boolean errorVisible = bodyText.contains("không chính xác") ||
                     bodyText.contains("tài khoản không tồn tại") ||
                     bodyText.contains("lỗi");
-            
+
             if (errorVisible) {
                 throw new RuntimeException("Login failed: Error message is visible on screen.");
             } else {
