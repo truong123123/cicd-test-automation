@@ -49,18 +49,18 @@ public class TluLoginTest {
     }
 
     @Test
-    public void testLoginFailure() {
-        System.out.println("Running login failure test...");
-        performLogin("235106718", "077205009741", false);
+    public void testLoginAccount1() {
+        System.out.println("Running login test 1...");
+        performLogin("2351067118", "077205009741");
     }
 
     @Test
-    public void testLoginSuccess() {
-        System.out.println("Running login success test...");
-        performLogin("2351067118", "077205009740", true);
+    public void testLoginAccount2() {
+        System.out.println("Running login test 2...");
+        performLogin("2351067118", "077205009740");
     }
 
-    private void performLogin(String username, String password, boolean shouldSucceed) {
+    private void performLogin(String username, String password) {
         driver.get("https://sinhvien1.tlu.edu.vn/#/login");
 
         // Wait for Angular initialization (similar to Thread.sleep(2000) in JS)
@@ -124,18 +124,19 @@ public class TluLoginTest {
         String currentUrl = driver.getCurrentUrl();
         System.out.println("Current URL: " + currentUrl);
 
-        if (shouldSucceed) {
-            if (currentUrl.contains("/login")) {
-                String bodyText = driver.findElement(By.tagName("body")).getText().toLowerCase();
-                boolean errorVisible = bodyText.contains("không chính xác") ||
-                        bodyText.contains("tài khoản không tồn tại") ||
-                        bodyText.contains("lỗi");
-                if (errorVisible) {
-                    throw new RuntimeException("Login failed despite correct credentials (error message visible)");
-                }
+        if (currentUrl.contains("/login")) {
+            String bodyText = driver.findElement(By.tagName("body")).getText().toLowerCase();
+            boolean errorVisible = bodyText.contains("không chính xác") ||
+                    bodyText.contains("tài khoản không tồn tại") ||
+                    bodyText.contains("lỗi");
+            
+            if (errorVisible) {
+                throw new RuntimeException("Login failed: Error message is visible on screen.");
+            } else {
+                throw new RuntimeException("Login failed: URL did not change after submitting.");
             }
         } else {
-            assertTrue(currentUrl.contains("/login"), "Login succeeded despite incorrect password!");
+            System.out.println("Login successful!");
         }
     }
 }

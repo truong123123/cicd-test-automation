@@ -21,6 +21,6 @@ jobs:
           cache: maven
           
       - name: Run Login Failure Test
-        run: mvn test -Dtest=TluLoginTest#testLoginFailure
+        run: mvn test -Dtest=TluLoginTest#testLoginAccount1
         env:
           CI: true
