@@ -51,7 +51,7 @@ public class TluLoginTest {
     @Test
     public void testLoginFailure() {
         System.out.println("Running login failure test...");
-        performLogin("2351067118", "077205009741", false);
+        performLogin("235106718", "077205009741", false);
     }
 
     @Test
