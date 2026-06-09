@@ -51,33 +51,13 @@ public class TluLoginTest {
     @Test
     public void testLoginFailure() {
         System.out.println("Running login failure test...");
-        try {
-            performLogin("2351067118", "077205009741", false);
-        } catch (Exception e) {
-            String isCI = System.getenv("CI");
-            if ("true".equalsIgnoreCase(isCI)) {
-                System.out.println("[WARN] Failure test failed on CI likely due to geo-blocking.");
-                System.out.println("Reason: " + e.getMessage());
-            } else {
-                throw e;
-            }
-        }
+        performLogin("2351067118", "077205009741", false);
     }
 
     @Test
     public void testLoginSuccess() {
         System.out.println("Running login success test...");
-        try {
-            performLogin("2351067118", "077205009740", true);
-        } catch (Exception e) {
-            String isCI = System.getenv("CI");
-            if ("true".equalsIgnoreCase(isCI)) {
-                System.out.println("[WARN] Success test failed on CI likely due to geo-blocking.");
-                System.out.println("Reason: " + e.getMessage());
-            } else {
-                throw e;
-            }
-        }
+        performLogin("2351067118", "077205009740", true);
     }
 
     private void performLogin(String username, String password, boolean shouldSucceed) {
