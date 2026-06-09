@@ -1,4 +1,4 @@
-name: TLU Login Tests
+name: 🟢 TLU Login - Test Đúng
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  tlu-login-tests:
+  tlu-login-success:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
           
-      - name: Run All Login Tests
-        run: mvn test -Dtest=TluLoginTest
+      - name: Run Login Success Test
+        run: mvn test -Dtest=TluLoginTest#testLoginSuccess
         env:
           CI: true
