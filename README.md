@@ -2,25 +2,25 @@
 
 A practical case study on integrating automated testing into a CI/CD pipeline using GitHub Actions. This project has been migrated to **Java Spring Boot** and demonstrates test automation using Selenium WebDriver and JUnit 5.
 
-## 📖 Overview
+##  Overview
 This project showcases how to:
 - Build a REST API backend using Java Spring Boot.
 - Write E2E (End-to-End) tests using Selenium WebDriver to automate browser actions.
 - Automate testing on every push and PR using GitHub Actions.
 - Handle real-world CI/CD scenarios (e.g. testing third-party logins, handling timeouts, and assertions).
 
-## 🏗️ Architecture
+##  Architecture
 ```text
 ┌────────────────────────────────────────────────────────┐
 │                    GitHub Actions                      │
 │                                                        │
-│  Push/PR ──► 🟢 TLU Login Test (Success Scenario)      │
-│          ──► 🔴 TLU Login Test (Failure Scenario)      │
+│  Push/PR ──►  TLU Login Test (Success Scenario)      │
+│          ──►  TLU Login Test (Failure Scenario)      │
 │                                                        │
 └────────────────────────────────────────────────────────┘
 ```
 
-## 📁 Project Structure
+##  Project Structure
 ```text
 cicd-test-automation/
 ├── src/
@@ -42,7 +42,7 @@ cicd-test-automation/
 └── pom.xml                               # Maven Configuration & Dependencies
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Java JDK 17+
@@ -60,7 +60,7 @@ cd cicd-test-automation
 ```
 The API will be available at `http://localhost:8080`
 
-## 🧪 Running Tests
+##  Running Tests
 This project uses Maven and Selenium for End-to-End browser testing.
 
 ```bash
@@ -71,27 +71,27 @@ This project uses Maven and Selenium for End-to-End browser testing.
 ./mvnw test -Dtest=TluLoginTest#testLoginAccount1
 ```
 
-## ⚙️ GitHub Actions Workflows
+##  GitHub Actions Workflows
 
 We have configured two parallel workflows that run automatically on GitHub Actions:
 
-### 1. 🟢 TLU Login (Success Workflow)
+### 1.  TLU Login (Success Workflow)
 - **File:** `tlu-login-success.yml`
 - **Trigger:** Push to any branch, PR to main/develop.
 - **Description:** Runs `testLoginAccount2`. Automates Chrome to enter a valid set of credentials and asserts that the login completes successfully (the URL leaves the `/#/login` page).
 
-### 2. 🔴 TLU Login (Failure Workflow)
+### 2.  TLU Login (Failure Workflow)
 - **File:** `tlu-login-fail.yml`
 - **Trigger:** Push to any branch, PR to main/develop.
 - **Description:** Runs `testLoginAccount1`. Attempts to login with specific credentials. The test succeeds if the application correctly prevents the login and stays on the login page or shows an error.
 
-## 📡 API Endpoints (Mocked Backend)
+##  API Endpoints (Mocked Backend)
 The Spring Boot application includes several built-in controllers for testing purposes:
 - **Authentication**: `POST /api/auth/login`
 - **Users**: `GET /api/users`, `POST /api/users`, etc.
 - **Products**: `GET /api/products`, `POST /api/products`, etc.
 
-## 🔐 Tools & Libraries
+##  Tools & Libraries
 - **Spring Boot 3.x:** Backend framework.
 - **Selenium WebDriver & WebDriverManager:** Browser automation.
 - **JUnit 5:** Test runner and assertions.

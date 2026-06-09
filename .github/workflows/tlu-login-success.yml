@@ -1,4 +1,4 @@
-name: 🟢 TLU Login - Test Đúng
+name:  TLU Login 
 
 on:
   push:
