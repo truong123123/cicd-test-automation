@@ -1,6 +1,6 @@
-package com.example.automation.service;
+package com.LeNhatTruong.automation.service;
 
-import com.example.automation.model.Product;
+import com.LeNhatTruong.automation.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

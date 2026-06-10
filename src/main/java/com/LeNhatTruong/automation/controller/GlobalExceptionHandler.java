@@ -1,4 +1,4 @@
-package com.example.automation.controller;
+package com.LeNhatTruong.automation.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

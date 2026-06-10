@@ -38,3 +38,5 @@ build/
 # Test screenshots
 *.png
 
+# Maven build directory
+target/

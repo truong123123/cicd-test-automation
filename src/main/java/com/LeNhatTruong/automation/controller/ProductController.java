@@ -1,7 +1,7 @@
-package com.example.automation.controller;
+package com.LeNhatTruong.automation.controller;
 
-import com.example.automation.model.Product;
-import com.example.automation.service.ProductService;
+import com.LeNhatTruong.automation.model.Product;
+import com.LeNhatTruong.automation.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

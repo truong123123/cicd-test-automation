@@ -1,4 +1,4 @@
-package com.example.automation;
+package com.LeNhatTruong.automation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

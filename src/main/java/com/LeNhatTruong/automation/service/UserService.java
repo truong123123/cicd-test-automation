@@ -1,6 +1,6 @@
-package com.example.automation.service;
+package com.LeNhatTruong.automation.service;
 
-import com.example.automation.model.User;
+import com.LeNhatTruong.automation.model.User;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;

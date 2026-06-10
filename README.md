@@ -24,13 +24,13 @@ This project showcases how to:
 ```text
 cicd-test-automation/
 ├── src/
-│   ├── main/java/com/example/automation/
+│   ├── main/java/com/LeNhatTruong/automation/
 │   │   ├── AutomationApplication.java    # Spring Boot entry point
 │   │   ├── controllers/                  # REST API Controllers (Auth, User, Product)
 │   │   ├── models/                       # Data Models
 │   │   └── services/                     # Business Logic
 │   │
-│   └── test/java/com/example/automation/
+│   └── test/java/com/LeNhatTruong/automation/
 │       └── e2e/
 │           └── TluLoginTest.java         # Selenium WebDriver E2E tests
 │

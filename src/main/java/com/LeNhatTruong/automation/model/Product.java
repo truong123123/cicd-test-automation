@@ -1,4 +1,4 @@
-package com.example.automation.model;
+package com.LeNhatTruong.automation.model;
 
 import lombok.Data;
 
